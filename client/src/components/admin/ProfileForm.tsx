@@ -20,27 +20,30 @@ interface ProfileFormProps {
 interface ProfileFormData {
   fullName: string;
   title: string;
+  summary: string;
   email: string;
   phone: string;
   location: string;
-  summary: string;
+  profileImage: string;
 }
 
 export default function ProfileForm({ profileId }: ProfileFormProps) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  
+
   const form = useForm<ProfileFormData>({
     defaultValues: {
       fullName: "",
       title: "",
+      summary: "",
       email: "",
       phone: "",
       location: "",
-      summary: ""
+      profileImage: ""
     },
   });
-
+  
+  // Load profile data
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -48,13 +51,15 @@ export default function ProfileForm({ profileId }: ProfileFormProps) {
         const response = await fetch(`/api/profile/${profileId}`);
         if (response.ok) {
           const data = await response.json();
+          
           form.reset({
             fullName: data.fullName,
             title: data.title,
+            summary: data.summary,
             email: data.email,
             phone: data.phone,
             location: data.location,
-            summary: data.summary
+            profileImage: data.profileImage || ""
           });
         }
       } catch (error) {
@@ -68,15 +73,17 @@ export default function ProfileForm({ profileId }: ProfileFormProps) {
         setLoading(false);
       }
     };
-
+    
     if (profileId) {
       fetchProfile();
     }
   }, [profileId, form, toast]);
-
+  
+  // Handle form submit
   const onSubmit = async (values: ProfileFormData) => {
     try {
       setLoading(true);
+      
       const response = await fetch(`/api/profile/${profileId}`, {
         method: 'PUT',
         headers: {
@@ -84,7 +91,7 @@ export default function ProfileForm({ profileId }: ProfileFormProps) {
         },
         body: JSON.stringify(values)
       });
-
+      
       if (response.ok) {
         toast({
           title: "Success",
@@ -108,10 +115,10 @@ export default function ProfileForm({ profileId }: ProfileFormProps) {
       setLoading(false);
     }
   };
-
+  
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-6">Profile Information</h2>
+      <h2 className="text-xl font-semibold mb-6">Personal Information</h2>
       
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -135,9 +142,9 @@ export default function ProfileForm({ profileId }: ProfileFormProps) {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Professional Title</FormLabel>
+                  <FormLabel>Job Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Professional Title" {...field} />
+                    <Input placeholder="Job Title" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -151,7 +158,7 @@ export default function ProfileForm({ profileId }: ProfileFormProps) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Email" type="email" {...field} />
+                    <Input type="email" placeholder="Email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -185,6 +192,20 @@ export default function ProfileForm({ profileId }: ProfileFormProps) {
                 </FormItem>
               )}
             />
+            
+            <FormField
+              control={form.control}
+              name="profileImage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Profile Image URL</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Profile Image URL" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           
           <FormField
@@ -196,7 +217,7 @@ export default function ProfileForm({ profileId }: ProfileFormProps) {
                 <FormControl>
                   <Textarea 
                     placeholder="Write a brief professional summary" 
-                    className="min-h-[120px]" 
+                    className="min-h-[120px]"
                     {...field} 
                   />
                 </FormControl>
@@ -206,7 +227,7 @@ export default function ProfileForm({ profileId }: ProfileFormProps) {
           />
           
           <Button type="submit" disabled={loading}>
-            {loading ? "Saving..." : "Save Profile"}
+            {loading ? "Saving..." : "Update Profile"}
           </Button>
         </form>
       </Form>

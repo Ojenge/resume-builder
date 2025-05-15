@@ -9,6 +9,10 @@ import {
 import ProfileForm from "@/components/admin/ProfileForm";
 import EducationManager from "@/components/admin/EducationManager";
 import SkillsManager from "@/components/admin/SkillsManager";
+import LanguagesManager from "@/components/admin/LanguagesManager";
+import CertificationsManager from "@/components/admin/CertificationsManager";
+import ExperienceManager from "@/components/admin/ExperienceManager";
+import AchievementsManager from "@/components/admin/AchievementsManager";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 
@@ -95,10 +99,14 @@ export default function Admin() {
 
         {profileId ? (
           <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-1 md:grid-cols-3 w-full mb-6">
+            <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 w-full mb-6">
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="education">Education</TabsTrigger>
               <TabsTrigger value="skills">Skills</TabsTrigger>
+              <TabsTrigger value="languages">Languages</TabsTrigger>
+              <TabsTrigger value="certifications">Certifications</TabsTrigger>
+              <TabsTrigger value="experience">Experience</TabsTrigger>
+              <TabsTrigger value="achievements">Achievements</TabsTrigger>
             </TabsList>
 
             <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-200">
@@ -112,6 +120,22 @@ export default function Admin() {
               
               <TabsContent value="skills">
                 <SkillsManager profileId={profileId} />
+              </TabsContent>
+              
+              <TabsContent value="languages">
+                <LanguagesManager profileId={profileId} />
+              </TabsContent>
+              
+              <TabsContent value="certifications">
+                <CertificationsManager profileId={profileId} />
+              </TabsContent>
+              
+              <TabsContent value="experience">
+                <ExperienceManager profileId={profileId} />
+              </TabsContent>
+              
+              <TabsContent value="achievements">
+                <AchievementsManager profileId={profileId} />
               </TabsContent>
             </div>
           </Tabs>
