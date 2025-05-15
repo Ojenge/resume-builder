@@ -4,3 +4,6 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+.env.example
+*.env
+attached_assets/Collins Ojenge.pdf
